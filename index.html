@@ -16,10 +16,10 @@
     }
 
     .box {
-      background: #00ff00;
+      background: #1db954;   /* green */
       padding: 14px 26px;
       border-radius: 14px;
-      color: #ffffff;
+      color: #ffffff;        /* white */
       font-size: 42px;
       font-weight: 800;
       white-space: nowrap;
@@ -35,10 +35,10 @@
   <script>
     /* 🔧 CONFIG */
     const API_KEY = "AIzaSyCMpEWlw9wIaE7yQ8DoBBSge8TW6BpV_zU";
-    const CHANNEL_ID ="UCEc2NqUesRfybaneYeGgtGw" ;
+    const CHANNEL_ID = "UCEc2NqUesRfybaneYeGgtGw";
 
     let SUB_GOAL = 60;      // starting goal
-    const GOAL_STEP = 10;  // how much goal increases each time
+    const GOAL_STEP = 10;  // auto increase step
 
     const URL = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${CHANNEL_ID}&key=${API_KEY}`;
 
@@ -50,15 +50,15 @@
           data.items[0].statistics.subscriberCount
         );
 
-        // Update current subs
+        // show current subs
         document.getElementById("current").innerText = subs;
 
-        // Auto-increase goal if reached
+        // auto-increase goal when reached
         if (subs >= SUB_GOAL) {
           SUB_GOAL = Math.ceil(subs / GOAL_STEP) * GOAL_STEP;
         }
 
-        // Update goal display
+        // show goal
         document.getElementById("goal").innerText = SUB_GOAL;
 
       } catch (e) {
@@ -71,6 +71,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
