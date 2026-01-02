@@ -1,89 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Sub Goal</title>
+  <meta charset="UTF-8">
+  <title>Auto Sub Goal</title>
 
   <style>
     body {
       margin: 0;
       background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       font-family: Arial, Helvetica, sans-serif;
     }
 
-    .wrapper {
-      padding: 12px 22px;
-      background: #31af1e;
+    .box {
+      background: #3f3f3f;
+      padding: 14px 26px;
       border-radius: 14px;
-      width: fit-content;
-    }
-
-    .goal {
-      font-size: 66px;
+      color: #ff2b2b;
+      font-size: 42px;
       font-weight: 800;
-      color: #ffffff;
       white-space: nowrap;
     }
   </style>
 </head>
 
 <body>
-  <div class="wrapper">
-    <div class="goal">
-      Sub :- <span id="current">--</span> / <span id="goal">55</span>
-    </div>
+  <div class="box">
+    Sub : <span id="current">--</span> / <span id="goal">--</span>
   </div>
 
   <script>
+    /* 🔧 CONFIG */
     const API_KEY = "AIzaSyCMpEWlw9wIaE7yQ8DoBBSge8TW6BpV_zU";
-    const CHANNEL_ID = "UCEc2NqUesRfybaneYeGgtGw";
-    const SUB_GOAL = 55;
+    const CHANNEL_ID ="UCEc2NqUesRfybaneYeGgtGw" ;
 
-    document.getElementById("goal").innerText = SUB_GOAL;
+    let SUB_GOAL = 60;      // starting goal
+    const GOAL_STEP = 10;  // how much goal increases each time
 
     const URL = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${CHANNEL_ID}&key=${API_KEY}`;
-
-    let currentSubs = null;
-
-    function animateCount(start, end, duration = 700) {
-      const startTime = performance.now();
-
-      function update(now) {
-        const progress = Math.min((now - startTime) / duration, 1);
-        const value = Math.floor(start + (end - start) * progress);
-
-        document.getElementById("current").innerText = value;
-
-        if (progress < 1) requestAnimationFrame(update);
-      }
-
-      requestAnimationFrame(update);
-    }
 
     async function fetchSubs() {
       try {
         const res = await fetch(URL);
         const data = await res.json();
-        const newSubs = parseInt(
+        const subs = parseInt(
           data.items[0].statistics.subscriberCount
         );
 
-        if (currentSubs === null) {
-          document.getElementById("current").innerText = newSubs;
-        } else if (newSubs !== currentSubs) {
-          animateCount(currentSubs, newSubs);
+        // Update current subs
+        document.getElementById("current").innerText = subs;
+
+        // Auto-increase goal if reached
+        if (subs >= SUB_GOAL) {
+          SUB_GOAL = Math.ceil(subs / GOAL_STEP) * GOAL_STEP;
         }
 
-        currentSubs = newSubs;
+        // Update goal display
+        document.getElementById("goal").innerText = SUB_GOAL;
 
-      } catch (err) {
+      } catch (e) {
         document.getElementById("current").innerText = "Err";
-        console.error(err);
       }
     }
 
     fetchSubs();
-    setInterval(fetchSubs, 60000); // safe & professional
+    setInterval(fetchSubs, 60000); // 1 minute (safe for 24/7)
   </script>
 </body>
 </html>
+
+
